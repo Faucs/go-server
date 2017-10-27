@@ -3,6 +3,7 @@ package main
 import(
 	"net/http"
 	"encoding/json"
+	"fmt"
 	"log"
 )
 
@@ -17,16 +18,21 @@ type City struct {
 }
 
 func main() {
-	http.HandleFunc("/connections/", conectionsFormHandler)
-	http.ListenAndServe(":8000", nil)
+	http.HandleFunc("/", serverRest)
+	//http.HandleFunc("/connections/", conectionsFormHandler)
+	http.ListenAndServe("localhost:8000", nil)
 }
 
-func conectionsFormHandler(w http.ResponseWriter, r *http.Request) {
-	conectionForm := Conection{}
-	
-	// FIXME: should check errors!
-	req, err := json.NewDecoder(r.Body).Decode(&conectionForm)
-	if err != nil{
-		log.Fatal("Error while reading r.Body: ", err)
+func serverRest(w http.ResponseWriter, r *http.Request) {
+	response, err := getJsonResponse()
+	if err != nil {
+		fmt.Errorf("error: %s", err)
+		return
+	}
+
+	fmt.Fprintf(w, string(response))
 }
+
+func getJsonResponse(){
+	conectionForm := make(map[string]string)
 }
